@@ -1,19 +1,16 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, deployments } from "hardhat";
+import { Treasury } from "../typechain";
 
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+describe("Treasury", function () {
+  let treasury: Treasury;
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+  beforeEach(async function () {
+    deployments.fixture(["Treasury"]);
+    treasury = await ethers.getContract("Treasury");
+  });
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
-
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
-
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+  it("Should deploy Treasury", async function () {
+    expect(treasury.address).to.be.properAddress;
   });
 });
