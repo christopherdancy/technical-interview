@@ -6,8 +6,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
 
-  await deployContract(hre, "Greeter", ["hi"]);
-  const test = await hre.deployments.get("Greeter");
+  await deployContract(hre, "Treasury", []);
+  const test = await hre.deployments.get("Treasury");
   console.log(test.address);
 };
 export default func;
