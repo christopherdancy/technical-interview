@@ -7,14 +7,15 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 contract Treasury {
     using SafeERC20 for IERC20;
 
-    mapping(address => uint256) private userBalances;
+    mapping(address => uint256) public userBalances;
 
-    function deposit() public pure returns (string memory) {
+    function deposit(uint amount) public returns (string memory) {
+        userBalances[address(this)] = 0;
         string memory fixMe = "please";
         return fixMe;
     }
 
-    function withdraw() public pure returns (string memory) {
+    function withdraw(uint amount) public pure returns (string memory) {
         string memory fixMe = "please";
         return fixMe;
     }
