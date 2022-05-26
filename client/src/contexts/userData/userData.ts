@@ -14,10 +14,10 @@ export type UserDataContext = readonly [UserData, SetTreasuryAddressFn];
 
 export const defaultTreasuryDataResponse = [{} as UserData, (() => undefined) as SetTreasuryAddressFn] as const;
 
-const useUserDatas = () => {
+const useUserDatas = (address: string) => {
   const [treasuryAddress, setTreasuryAddress] = useState<string>();
   const treasuryContract = useTreasuryContract();
-  const userBalance = useUserBalance(treasuryContract);
+  const userBalance = useUserBalance(treasuryContract, address);
 
   const userData: UserData = {
     treasuryContract,
