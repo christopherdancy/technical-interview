@@ -19,49 +19,42 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface TreasuryInterface extends ethers.utils.Interface {
+interface IERC20PermitInterface extends ethers.utils.Interface {
   functions: {
-    "deposit(address,uint256)": FunctionFragment;
-    "userBalances(address,address)": FunctionFragment;
-    "withdraw(uint256)": FunctionFragment;
+    "DOMAIN_SEPARATOR()": FunctionFragment;
+    "nonces(address)": FunctionFragment;
+    "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "deposit",
-    values: [string, BigNumberish]
+    functionFragment: "DOMAIN_SEPARATOR",
+    values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "userBalances",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdraw",
-    values: [BigNumberish]
+    functionFragment: "permit",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
   ): string;
 
-  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "userBalances",
+    functionFragment: "DOMAIN_SEPARATOR",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
 
-  events: {
-    "Deposit(address,address,uint256)": EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
+  events: {};
 }
 
-export type DepositEvent = TypedEvent<
-  [string, string, BigNumber] & {
-    sender: string;
-    token: string;
-    amount: BigNumber;
-  }
->;
-
-export class Treasury extends BaseContract {
+export class IERC20Permit extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -102,112 +95,93 @@ export class Treasury extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: TreasuryInterface;
+  interface: IERC20PermitInterface;
 
   functions: {
-    deposit(
-      token: string,
-      amount: BigNumberish,
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    userBalances(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    withdraw(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
   };
 
-  deposit(
-    token: string,
-    amount: BigNumberish,
+  DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+
+  nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  permit(
+    owner: string,
+    spender: string,
+    value: BigNumberish,
+    deadline: BigNumberish,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  userBalances(
-    arg0: string,
-    arg1: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
-    deposit(
-      token: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
-    userBalances(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
-  filters: {
-    "Deposit(address,address,uint256)"(
-      sender?: null,
-      token?: null,
-      amount?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { sender: string; token: string; amount: BigNumber }
-    >;
-
-    Deposit(
-      sender?: null,
-      token?: null,
-      amount?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { sender: string; token: string; amount: BigNumber }
-    >;
-  };
+  filters: {};
 
   estimateGas: {
-    deposit(
-      token: string,
-      amount: BigNumberish,
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    userBalances(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdraw(
-      amount: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    deposit(
-      token: string,
-      amount: BigNumberish,
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    nonces(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    userBalances(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      amount: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }
