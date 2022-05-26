@@ -1,9 +1,7 @@
-import React from 'react'
 import useUserDatas from '../contexts/userData/userData'
 
-const CurrentBalance = () => {
-  const userData = useUserDatas();
-  // console.log(userData[0].userBalance?.toString())
+const CurrentBalance = ({address}:{address:string}) => {
+  const userData = useUserDatas(address);
   return (
     <div className="flex text-white">
         <div>
