@@ -4,7 +4,7 @@ import useUserDatas, { UserDataContext, defaultTreasuryDataResponse } from './us
 
 const createUserDataRoot = (context: React.Context<UserDataContext>) => {
   const UserDataRoot = ({ children }: { children: React.ReactNode }) => {
-    const userData = useUserDatas();
+    const userData = useUserDatas("");
 
     return (
       <context.Provider value={userData}>
